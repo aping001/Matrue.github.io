@@ -33,7 +33,7 @@ googleAnalytics = "UA-131218098-1"      # UA-XXXXXXXX-X
 
 # 站点信息
 [params]
-  author = "dejavu"
+  author = "Mature"
   whoami = "一名信息安全爱好者!"
   avatar = "https://avatars1.githubusercontent.com/u/40487319?s=460&v=4"
   keywords = ["Mature","信息安全","网络安全","红蓝攻防","渗透测试","bypass","waf","注入","黑客","chabug"]
