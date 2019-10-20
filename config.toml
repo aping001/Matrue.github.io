@@ -1,6 +1,6 @@
 baseURL = "https://ninjia.org"
 languageCode = "zh-cn"
-title = "dejavu的博客 | 伪程序员,信安爱好者,专注于网络攻防和信息安全"
+title = "Mature的博客 | 信安爱好者,专注于网络攻防和信息安全"
 theme = "easybook"
 
 pygmentsCodefences = true
@@ -29,22 +29,22 @@ googleAnalytics = "UA-131218098-1"      # UA-XXXXXXXX-X
 [[menu.main]]
   name = "Tools"
   weight = 50
-  url = "https://www.t00ls.net/members-profile-12493.html"
+  url = "https://www.t00ls.net/members-profile-12869.html"
 
 # 站点信息
 [params]
   author = "dejavu"
-  whoami = "尼古拉斯Y4er的哥哥Y5er"
+  whoami = "一名信息安全爱好者!"
   avatar = "https://avatars1.githubusercontent.com/u/40487319?s=460&v=4"
-  keywords = ["Y4er","信息安全","网络安全","红蓝攻防","渗透测试","bypass","waf","注入","黑客","chabug"]
+  keywords = ["Mature","信息安全","网络安全","红蓝攻防","渗透测试","bypass","waf","注入","黑客","chabug"]
   description = "伪程序员,信安爱好者,专注于网络攻防和信息安全."
 
   [params.social]
-    GitHub = "https://github.com/kancaidao"
+    GitHub = "https://github.com/aping001"
     Email = "mailto:admin@chabug.org"
   [params.utterances]       # https://utteranc.es/
-    owner = "Y4er"              # Your GitHub ID
-    repo = "Y4er.com"               # The repo to store comments
+    owner = "Mature"              # Your GitHub ID
+    repo = "ninjia.org"               # The repo to store comments
   baiduPush = true        # baidu push                  # 百度
   baiduAnalytics = "150ef5faf0461b9f83612d60d72b86b1"      # Baidu Analytics
   baiduVerification = "PsCl6huhUk"   # Baidu Verification
