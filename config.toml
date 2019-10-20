@@ -11,23 +11,23 @@ paginate = 8                                              # 首页每页显示�
 googleAnalytics = "UA-131218098-1"      # UA-XXXXXXXX-X
 # 右上角菜单
 [[menu.main]]
-  name = "Home"
+  name = "首页"
   weight = 10
   url = "/"
 [[menu.main]]
-  name = "Category"
+  name = "文章"
   weight = 20
   url = "/post/"
 [[menu.main]]
-  name = "Words"
+  name = "日常"
   weight = 30
   url = "/words"
 [[menu.main]]
-  name = "About"
+  name = "关于"
   weight = 40
   url = "/about"
 [[menu.main]]
-  name = "Tools"
+  name = "土司"
   weight = 50
   url = "https://www.t00ls.net/members-profile-12869.html"
 
