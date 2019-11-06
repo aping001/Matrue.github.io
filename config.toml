@@ -30,6 +30,11 @@ googleAnalytics = "UA-131218098-1"      # UA-XXXXXXXX-X
   name = "T00ls"
   weight = 50
   url = "https://www.t00ls.net/members-profile-12869.html"
+ [[menu.main]]
+  name = "blogroll"
+  weight = 60
+  url = "/blogroll"
+
 
 # 站点信息
 [params]
