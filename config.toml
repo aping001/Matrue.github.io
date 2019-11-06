@@ -31,7 +31,7 @@ googleAnalytics = "UA-131218098-1"      # UA-XXXXXXXX-X
   weight = 50
   url = "https://www.t00ls.net/members-profile-12869.html"
  [[menu.main]]
-  name = "blogroll"
+  name = "Blogroll"
   weight = 60
   url = "/blogroll"
 
