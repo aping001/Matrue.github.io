@@ -1,6 +1,6 @@
 ---
 title: "Jenkins Git Client插件远程命令执行漏洞"
-date: 2019-11-06T14:32:15+08:00
+date: 2019-10-25T16:32:15+08:00
 draft: false
 tags: ['远程代码执行漏洞']
 categories: ['漏洞复现']
