@@ -126,6 +126,8 @@ exploit
 ![图片](https://ae01.alicdn.com/kf/Udc26e0c49a1f485b87a0eae0e88488a8d.jpg)
 
 (4)  我们的机器上监听好端口(我们制作的jar包是直接反弹shell的)
+
+
 (5)  点击我们刚刚上传的jar包:
 
 ![图片](https://ae01.alicdn.com/kf/Ub00fe9f70aeb4b65bd3aeaef3974acf01.jpg)
