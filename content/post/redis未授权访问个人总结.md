@@ -7,6 +7,9 @@ categories: ['总结']
 ---
 首发于土司,现更新到自己博客!
 
+pdf版下载:
+https://github.com/aping001/Matrue.github.io/raw/master/content/post/redis%E6%9C%AA%E6%8E%88%E6%9D%83%E4%B8%AA%E4%BA%BA%E6%80%BB%E7%BB%93.pdf
+
 土司文章链接:
 
 https://www.t00ls.net/thread-54620-1-1.html
