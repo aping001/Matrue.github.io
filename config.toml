@@ -41,7 +41,7 @@ googleAnalytics = "UA-131218098-1"      # UA-XXXXXXXX-X
   author = "Mature"
   whoami = "一名信息安全爱好者!"
   avatar = "https://ae01.alicdn.com/kf/U4076cc26dcb1472abae912383cae82d12.jpg"
-  keywords = ["Mature","信息安全","网络安全","红蓝攻防","渗透测试","bypass","waf","注入","黑客","chabug"]
+  keywords = ["Mature","信息安全","网络安全","红蓝攻防","渗透测试","bypass","waf","注入","黑客"]
   description = "伪程序员,信安爱好者,专注于网络攻防和信息安全."
 
   [params.social]
